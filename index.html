@@ -1,0 +1,631 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Te Amo Milagros</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            /* Evita que el zoom del sistema rompa el diseño en algunos navegadores */
+            -webkit-text-size-adjust: 100%;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px; /* Reducido de 50px para móviles */
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .text-container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px; /* Reducido para móviles */
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: opacity 0.8s;
+            box-sizing: border-box;
+            margin-top: 20px;
+        }
+
+        #title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.8rem, 8vw, 3.5rem); /* Tamaño dinámico */
+            color: white;
+            letter-spacing: clamp(5px, 3vw, 15px); /* Espaciado dinámico */
+            margin: 0;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            word-wrap: break-word;
+        }
+
+        #subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(0.9rem, 4vw, 1.2rem); /* Tamaño dinámico */
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 2px;
+            margin-top: 15px;
+            line-height: 1.4;
+        }
+
+        #nav-btn {
+            width: auto;
+            max-width: 90%;
+            padding: 15px 30px; /* Más compacto para móviles */
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid white;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: clamp(2px, 2vw, 6px);
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.4s;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            font-size: clamp(0.7rem, 3vw, 1rem);
+            box-sizing: border-box;
+        }
+
+        #nav-btn:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            transform: scale(1.05);
+        }
+
+        /* Ajustes específicos para pantallas muy pequeñas o con letras grandes */
+        @media (max-width: 480px) {
+            .ui-layer {
+                padding: 15px;
+            }
+            .text-container {
+                padding: 15px;
+            }
+            #nav-btn {
+                padding: 12px 20px;
+                margin-bottom: 20px;
+            }
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 4px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 20;
+            transition: opacity 0.2s;
+        }
+
+        /* ========================================== */
+        /* PANTALLA DE ENTRADA ROMÁNDICA Y ELEGANTE   */
+        /* ========================================== */
+        #password-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a001a, #0d000d, #000000);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .romantic-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.25);
+            animation: floatCard 4s ease-in-out infinite;
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .romantic-photo-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px auto;
+            overflow: hidden;
+            border-radius: 18px;
+            border: 2px solid rgba(255, 105, 180, 0.8);
+            /* Efecto de líneas brillantes y neón flotantes en el aire */
+            filter: drop-shadow(0 0 12px #ff1493) drop-shadow(0 0 24px #ff69b4) drop-shadow(0 0 36px rgba(255, 182, 193, 0.8));
+            animation: floatHeart 3s ease-in-out infinite;
+        }
+
+        @keyframes floatHeart {
+            0%, 100% {
+                transform: translateY(0px);
+                filter: drop-shadow(0 0 10px #ff1493) drop-shadow(0 0 20px #ff69b4) drop-shadow(0 0 30px rgba(255, 182, 193, 0.7));
+            }
+            50% {
+                transform: translateY(-12px);
+                filter: drop-shadow(0 0 18px #ff1493) drop-shadow(0 0 35px #ff69b4) drop-shadow(0 0 50px rgba(255, 182, 193, 1));
+            }
+        }
+
+        .romantic-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .romantic-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #ffb6c1;
+            text-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+        }
+
+        .romantic-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .romantic-input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            border-radius: 30px;
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .romantic-input:focus {
+            border-color: #ff69b4;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .romantic-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .romantic-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.7);
+        }
+
+        #error-msg {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: 12px;
+            min-height: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA DE ENTRADA ROMÁNTICA -->
+    <div id="password-screen">
+        <div class="romantic-card">
+            <div class="romantic-photo-container">
+                <!-- Se incluye foto.png. Si aún no está cargada, mostrará respaldo temporal -->
+                <img src="foto.png" alt="Mi amor" onerror="this.src='https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg'">
+            </div>
+            <h2 class="romantic-title">❤️Para Mi Amor ❤️</h2>
+            <p class="romantic-subtitle">Ingresa nuestro número de relación para entrar a este rinconcito de amor.🥺💖</p>
+            <input type="password" id="pass-input" class="romantic-input" placeholder="Numero De Relación...">
+            <button id="pass-btn" class="romantic-btn">🌹Entrar🌹</button>
+            <div id="error-msg">Contraseña incorrecta, mi vida 🥺</div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading-screen">PREPARANDO ALGO ESPECIAL PARA TI...</div>
+    <div id="flash"></div>
+
+    <div class="ui-layer">
+        <div class="text-container" id="ui-text">
+            <h1 id="title">LA TIERRA</h1>
+            <p id="subtitle">En este inmenso mundo, el destino me regaló el milagro más grande: encontrarte a ti.</p>
+        </div>
+        <button id="nav-btn">✦ CONTINUAR ✦</button>
+    </div>
+
+    <div id="container"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        let scene, camera, renderer, earth, moon, sun, stars, starLines;
+        let currentState = 0;
+        let isJumping = false;
+        let warpSpeed = 0;
+        
+        // Variables para el Sistema Solar
+        let solarSystemGroup;
+        let planets = {};
+        let orbits = {};
+        let orbitSpeeds = {};
+        let rotationSpeeds = {};
+        
+        const container = document.getElementById('container');
+        const loadingScreen = document.getElementById('loading');
+        const titleEl = document.getElementById('title');
+        const subtitleEl = document.getElementById('subtitle');
+        const btnEl = document.getElementById('nav-btn');
+        const flashEl = document.getElementById('flash');
+        const uiText = document.getElementById('ui-text');
+
+        const states = [
+            { title: "LA TIERRA", subtitle: "En este inmenso mundo, el destino me regaló el milagro más grande: encontrarte a ti.", camZ: 8, sunIntensity: 2 },
+            { title: "LA LUNA", subtitle: "Como la luna ilumina la oscuridad más profunda, tú iluminas cada rincón de mi alma. Eres mi luz en cada noche.", camZ: 6, sunIntensity: 1 },
+            { title: "EL SOL", subtitle: "Mi amor por ti arde con más fuerza que mil soles. Cada día a tu lado es calor, vida y todo lo que necesito para existir.", camZ: 18, sunIntensity: 5 },
+            { title: "EL UNIVERSO", subtitle: "Si el universo entero pudiera hablar, repetiría sin parar lo que yo siento: te amo a ti, solo a ti, ahora y siempre.", camZ: 50, sunIntensity: 2 },
+            { title: "EL INFINITO", subtitle: "Más allá del tiempo, más allá de las estrellas, más allá de todo lo que existe... ahí estaré yo, amándote a ti. Para siempre. ♾️❤️", camZ: 15, sunIntensity: 3 }
+        ];
+
+        // Datos de los planetas: nombre, tamaño, color, distancia orbital, velocidad orbital, velocidad de rotación
+        const planetData = {
+            mercury: { size: 0.38, color: 0x8c7853, distance: 8, orbitSpeed: 0.04, rotationSpeed: 0.004 },
+            venus: { size: 0.95, color: 0xffc649, distance: 12, orbitSpeed: 0.015, rotationSpeed: 0.002 },
+            earth: { size: 1.0, color: 0x4a90e2, distance: 16, orbitSpeed: 0.01, rotationSpeed: 0.01 },
+            mars: { size: 0.53, color: 0xe27b58, distance: 20, orbitSpeed: 0.008, rotationSpeed: 0.009 },
+            jupiter: { size: 2.5, color: 0xc88b3a, distance: 30, orbitSpeed: 0.002, rotationSpeed: 0.02 },
+            saturn: { size: 2.1, color: 0xf4d47f, distance: 40, orbitSpeed: 0.0009, rotationSpeed: 0.018, hasRings: true },
+            uranus: { size: 1.5, color: 0x4fd0e7, distance: 50, orbitSpeed: 0.0004, rotationSpeed: 0.008 },
+            neptune: { size: 1.5, color: 0x4166f5, distance: 60, orbitSpeed: 0.0001, rotationSpeed: 0.012 }
+        };
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+            const sunLight = new THREE.PointLight(0xffffff, 2, 1000);
+            sunLight.position.set(0, 0, 0);
+            scene.add(sunLight);
+
+            createWarpStars();
+            createEarth();
+            createMoon();
+            createSun();
+            createSolarSystem();
+            
+            camera.position.z = 50;
+            setTimeout(() => {
+                loadingScreen.style.opacity = 0;
+                setTimeout(() => loadingScreen.style.display = 'none', 1000);
+                updateObjects();
+            }, 2000);
+            animate();
+        }
+
+        function createWarpStars() {
+            const starGeometry = new THREE.BufferGeometry();
+            const starPositions = [];
+            for (let i = 0; i < 8000; i++) {
+                starPositions.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(3000));
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+            const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 1.2, transparent: true });
+            stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+
+            const lineGeometry = new THREE.BufferGeometry();
+            const linePositions = [];
+            for (let i = 0; i < 1500; i++) {
+                const x = THREE.MathUtils.randFloatSpread(1500), y = THREE.MathUtils.randFloatSpread(1500), z = THREE.MathUtils.randFloatSpread(3000);
+                linePositions.push(x, y, z, x, y, z + 60);
+            }
+            lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
+            starLines = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(starLines);
+        }
+
+        function createEarth() {
+            const geometry = new THREE.SphereGeometry(3, 64, 64);
+            const texture = new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg');
+            earth = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({ map: texture, shininess: 15 }));
+            scene.add(earth);
+        }
+
+        function createMoon() {
+            const geometry = new THREE.SphereGeometry(1.8, 64, 64);
+            const texture = new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg');
+            moon = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({ map: texture }));
+            moon.position.set(0, 0, -200);
+            scene.add(moon);
+        }
+
+        function createSun() {
+            const geometry = new THREE.SphereGeometry(5, 64, 64);
+            sun = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0xffdd44 }));
+            sun.position.set(0, 0, -200);
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+                map: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/lensflare/lensflare0.png'),
+                color: 0xffaa00, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending
+            }));
+            sprite.scale.set(30, 30, 1);
+            sun.add(sprite);
+            scene.add(sun);
+        }
+
+        function createSolarSystem() {
+            solarSystemGroup = new THREE.Group();
+            scene.add(solarSystemGroup);
+
+            // Crear el Sol en el centro del Sistema Solar
+            const sunGeometry = new THREE.SphereGeometry(2, 32, 32);
+            const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xfdb813 });
+            const solarSun = new THREE.Mesh(sunGeometry, sunMaterial);
+            solarSystemGroup.add(solarSun);
+
+            // Crear cada planeta
+            Object.keys(planetData).forEach(planetName => {
+                const data = planetData[planetName];
+                
+                // Crear el grupo orbital
+                const orbitGroup = new THREE.Group();
+                solarSystemGroup.add(orbitGroup);
+                orbits[planetName] = orbitGroup;
+                orbitSpeeds[planetName] = data.orbitSpeed;
+                rotationSpeeds[planetName] = data.rotationSpeed;
+
+                // Crear la geometría del planeta
+                const geometry = new THREE.SphereGeometry(data.size, 32, 32);
+                const material = new THREE.MeshPhongMaterial({ color: data.color });
+                const planet = new THREE.Mesh(geometry, material);
+                planet.position.x = data.distance;
+                orbitGroup.add(planet);
+                planets[planetName] = planet;
+
+                // Añadir anillos a Saturno
+                if (data.hasRings) {
+                    const ringGeometry = new THREE.TorusGeometry(data.size * 1.8, data.size * 0.5, 32, 100);
+                    const ringMaterial = new THREE.MeshPhongMaterial({ 
+                        color: 0xd4a574,
+                        side: THREE.DoubleSide,
+                        transparent: true,
+                        opacity: 0.8
+                    });
+                    const rings = new THREE.Mesh(ringGeometry, ringMaterial);
+                    rings.rotation.x = Math.PI * 0.4;
+                    planet.add(rings);
+                }
+
+                // Dibujar la órbita (línea visual)
+                const orbitLine = new THREE.BufferGeometry();
+                const orbitPoints = [];
+                for (let i = 0; i <= 64; i++) {
+                    const angle = (i / 64) * Math.PI * 2;
+                    orbitPoints.push(
+                        Math.cos(angle) * data.distance,
+                        0,
+                        Math.sin(angle) * data.distance
+                    );
+                }
+                orbitLine.setAttribute('position', new THREE.BufferAttribute(new Float32Array(orbitPoints), 3));
+                const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x444444, transparent: true, opacity: 0.3 });
+                const orbitMesh = new THREE.Line(orbitLine, orbitMaterial);
+                solarSystemGroup.add(orbitMesh);
+            });
+        }
+
+        function updateObjects() {
+            earth.visible = (currentState === 0 || currentState === 3);
+            moon.visible = (currentState === 1 || currentState === 3);
+            sun.visible = (currentState === 2 || currentState === 3);
+            solarSystemGroup.visible = (currentState === 3);
+            
+            if (currentState === 0) earth.position.set(0, 0, 0);
+            else if (currentState === 1) moon.position.set(0, 0, 0);
+            else if (currentState === 2) sun.position.set(0, 0, 0);
+            else { 
+                earth.position.set(-10, 4, -20); 
+                moon.position.set(10, -4, -25); 
+                sun.position.set(0, 0, -50); 
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (earth) earth.rotation.y += 0.002;
+            if (moon) moon.rotation.y += 0.0015;
+            if (sun) sun.rotation.y += 0.004;
+
+            // Animar el Sistema Solar
+            if (solarSystemGroup && solarSystemGroup.visible) {
+                Object.keys(planets).forEach(planetName => {
+                    // Rotación del planeta sobre su eje
+                    planets[planetName].rotation.y += rotationSpeeds[planetName];
+                    
+                    // Traslación alrededor del Sol
+                    orbits[planetName].rotation.y += orbitSpeeds[planetName];
+                });
+            }
+
+            if (isJumping) {
+                warpSpeed = THREE.MathUtils.lerp(warpSpeed, 180, 0.04);
+                starLines.material.opacity = THREE.MathUtils.lerp(starLines.material.opacity, 1, 0.08);
+                camera.position.z -= 0.8;
+                camera.fov = THREE.MathUtils.lerp(camera.fov, 110, 0.04);
+            } else {
+                warpSpeed = THREE.MathUtils.lerp(warpSpeed, 0.6, 0.05);
+                starLines.material.opacity = THREE.MathUtils.lerp(starLines.material.opacity, 0, 0.1);
+                camera.fov = THREE.MathUtils.lerp(camera.fov, 75, 0.05);
+                camera.position.z = THREE.MathUtils.lerp(camera.position.z, states[currentState].camZ, 0.05);
+            }
+            camera.updateProjectionMatrix();
+            stars.position.z += warpSpeed;
+            if (stars.position.z > 1000) stars.position.z = -1000;
+            starLines.position.z += warpSpeed * 2;
+            if (starLines.position.z > 1000) starLines.position.z = -1000;
+            renderer.render(scene, camera);
+        }
+
+        btnEl.addEventListener('click', () => {
+            if (isJumping) return;
+            isJumping = true;
+            uiText.style.opacity = 0;
+            btnEl.style.opacity = 0;
+            btnEl.style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                flashEl.style.opacity = 1;
+                setTimeout(() => {
+                    currentState = (currentState + 1) % states.length;
+                    const s = states[currentState];
+                    titleEl.innerText = s.title;
+                    subtitleEl.innerText = s.subtitle;
+                    
+                    // Cambio de texto del botón si es el último estado
+                    btnEl.innerText = (currentState === states.length - 1) ? "✦ REINICIAR ✦" : "✦ CONTINUAR ✦";
+                    
+                    updateObjects();
+                    flashEl.style.opacity = 0;
+                    isJumping = false;
+                    setTimeout(() => { uiText.style.opacity = 1; btnEl.style.opacity = 1; btnEl.style.pointerEvents = 'auto'; }, 800);
+                }, 250);
+            }, 2500);
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        init();
+    </script>
+
+    <!-- LÓGICA DE LA CONTRASEÑA SECRETA -->
+    <script>
+        // Puedes cambiar la contraseña aquí abajo (actualmente es "11")
+        const correctPassword = "11"; 
+        const passScreen = document.getElementById('password-screen');
+        const passInput = document.getElementById('pass-input');
+        const passBtn = document.getElementById('pass-btn');
+        const errorMsg = document.getElementById('error-msg');
+
+        function verifyPassword() {
+            if (passInput.value.trim().toLowerCase() === correctPassword.toLowerCase()) {
+                passScreen.style.opacity = '0';
+                passScreen.style.visibility = 'hidden';
+                setTimeout(() => {
+                    passScreen.remove();
+                }, 800);
+            } else {
+                errorMsg.style.opacity = '1';
+                passInput.style.borderColor = '#ff6b6b';
+                passInput.value = '';
+                setTimeout(() => {
+                    passInput.style.borderColor = 'rgba(255, 182, 193, 0.4)';
+                }, 1500);
+            }
+        }
+
+        passBtn.addEventListener('click', verifyPassword);
+        passInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                verifyPassword();
+            }
+        });
+    </script>
+</body>
+</html>
